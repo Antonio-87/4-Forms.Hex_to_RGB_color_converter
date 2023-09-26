@@ -1,14 +1,16 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 
 const ColorConverter = () => {
   const [hex, setHex] = useState("");
   const [rgb, setRgb] = useState("");
   const [error, setError] = useState("");
+  const formElement = useRef<HTMLFormElement>(null);
+  const rgbColorElement = useRef<HTMLDivElement>(null);
 
   const HandleHexChenge = (event: ChangeEvent<HTMLInputElement>) => {
     const newHex = event.target.value;
-    const form = document.querySelector("form") as HTMLFormElement;
-    const rgbColor = document.querySelector(".rgb-color") as HTMLFormElement;
+    const form = formElement.current as HTMLFormElement;
+    const rgbColor = rgbColorElement.current as HTMLDivElement;
 
     if (newHex.length === 7 && /^#[0-9A-Fa-f]{6}/i.test(newHex)) {
       setHex(newHex);
@@ -43,7 +45,7 @@ const ColorConverter = () => {
   };
 
   return (
-    <form>
+    <form ref={formElement}>
       <input
         type="text"
         className="hex-color"
@@ -51,7 +53,10 @@ const ColorConverter = () => {
         defaultValue={hex}
         placeholder="Введите цвет в формате HEX"
       ></input>
-      <div className={rgb !== "" ? "rgb-color rgb" : "rgb-color error"}></div>
+      <div
+        className={rgb !== "" ? "rgb-color rgb" : "rgb-color error"}
+        ref={rgbColorElement}
+      ></div>
       <span className="text-color">{rgb !== "" ? rgb : error}</span>
     </form>
   );
